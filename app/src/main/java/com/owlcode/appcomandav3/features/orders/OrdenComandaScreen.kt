@@ -1,5 +1,6 @@
 package com.owlcode.appcomandav3.features.orders
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +41,10 @@ import com.owlcode.appcomandav3.ui.componet.dialog.DialogObservaciones
 import com.owlcode.appcomandav3.ui.primary.ButtonPrimary
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
 import com.owlcode.appcomandav3.R
+import com.owlcode.appcomandav3.common.OrdenComandaNav
+import com.owlcode.appcomandav3.common.ZoneNav
+import com.owlcode.appcomandav3.ui.componet.dialog.DialogConfirmationComanda
+import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
@@ -48,8 +54,23 @@ fun OrdenComandaScreen(
 ) {
     val state = viewModel.state.value
     var showDialogObservacion by remember { mutableStateOf(false) }
+    var showDialogConfirmationComanda by remember { mutableStateOf(false) }
     var positionItem by remember { mutableStateOf(-1) }
 
+
+    LaunchedEffect(Unit){
+        viewModel.uiEvnet.collectLatest {
+            when(it){
+                UIEvent.GoToZona -> {
+                    navController.navigate(ZoneNav.ZoneScreen.route){
+                        popUpTo(OrdenComandaNav.OrdenComandaScreen.route){
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+        }
+    }
     Row(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -123,9 +144,9 @@ fun OrdenComandaScreen(
                             .fillMaxWidth()
                             .align(Alignment.Start)
                     ) {
-                        TextPrimary(text = "Zona: Piso 1")
-                        TextPrimary(text = "Mesa: 1")
-                        TextPrimary(text = "Mozo: Usuario1")
+                        TextPrimary(text = "Zona: ${state.datoZone?.nombreZonas.orEmpty()}")
+                        TextPrimary(text = "Mesa: ${state.datoMesa?.idMesa ?: -1}")
+                        TextPrimary(text = "Mozo: ${state.datoMesa?.NombreMozo.orEmpty()}")
                     }
                     Row(
                         modifier = Modifier
@@ -191,7 +212,7 @@ fun OrdenComandaScreen(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         text = "Enviar",
                         onClick = {
-
+                            showDialogConfirmationComanda = true
                         }
                     )
                 }
@@ -212,5 +233,24 @@ fun OrdenComandaScreen(
             showDialogObservacion = false
         }
     )
+
+
+    DialogConfirmationComanda(
+        show = showDialogConfirmationComanda,
+        onClickConfirma = {
+            viewModel.onEvent(OrdenComandaEvent.OnClickEnviarComanda)
+        },
+        onClickCancelar = {
+            showDialogConfirmationComanda = false
+        }
+    )
+
+    BackHandler {
+        navController.navigate(ZoneNav.ZoneScreen.route){
+            popUpTo(OrdenComandaNav.OrdenComandaScreen.route){
+                inclusive = true
+            }
+        }
+    }
 
 }

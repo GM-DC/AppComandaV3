@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.owlcode.appcomandav3.common.utils.Companion.DATA_USER
 import com.owlcode.appcomandav3.common.utils.Companion.NOMBRE_USURIO
 import com.owlcode.appcomandav3.core.NetworkResult
 import com.owlcode.appcomandav3.domain.passcode.model.LoginUserModel
@@ -79,6 +80,7 @@ class LoginViewModel @Inject constructor(
                                     responseLogin = result.data,
                                     isLoading = false
                                 )
+                                result.data?.let { DATA_USER = it }
                                 NOMBRE_USURIO = state.value.responseLogin?.usuario.orEmpty()
                                 if (state.value.responseLogin != null){
                                     viewModelScope.launch(Dispatchers.Main) {

@@ -8,15 +8,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.owlcode.appcomandav3.domain.zones.model.TableModel
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
 import com.owlcode.appcomandav3.ui.theme.Amber
+import com.owlcode.appcomandav3.ui.theme.AmberDesgrade
 import com.owlcode.appcomandav3.ui.theme.DodgerBlue
+import com.owlcode.appcomandav3.ui.theme.DodgerBlueDesgrade
 import com.owlcode.appcomandav3.ui.theme.Scarlet
+import com.owlcode.appcomandav3.ui.theme.ScarletDegrade
 
 
 @Composable
@@ -25,17 +31,23 @@ fun MesaItem(
     dataMesa: TableModel,
     onClickMesa: (String) -> Unit
 ) {
-    val color = when{
+    var color = Color.White
+    var containerColor = Color.White
+    when{
         dataMesa.estadoTrans == "L" && dataMesa.idPedido.isNullOrEmpty() ->{
-            DodgerBlue
+             color = DodgerBlue
+             containerColor = DodgerBlueDesgrade
         }
         dataMesa.estadoTrans == "O" && !dataMesa.idPedido.isNullOrEmpty() -> {
-            Scarlet
+             color = Scarlet
+             containerColor = ScarletDegrade
         }
         else -> {
-            Amber
+             color = Amber
+             containerColor = AmberDesgrade
         }
     }
+
     Card(
         modifier = modifier
             .width(150.dp)
@@ -43,7 +55,10 @@ fun MesaItem(
             .clickable {
                 onClickMesa(dataMesa.idMesa.toString())
             },
-        border = BorderStroke(2.dp, color)
+        border = BorderStroke(2.dp, color),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+        ),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

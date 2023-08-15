@@ -4,6 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.owlcode.appcomandav3.common.utils
+import com.owlcode.appcomandav3.common.utils.Companion.DATA_ZONA
 import com.owlcode.appcomandav3.core.NetworkResult
 import com.owlcode.appcomandav3.domain.zones.usecase.GetTableUseCase
 import com.owlcode.appcomandav3.domain.zones.usecase.GetZonesUseCase
@@ -50,6 +52,7 @@ class ZonasViewModel @Inject constructor(
                                     listaZona = result.data ?: listOf(),
                                     isLoading = false
                                 )
+                                DATA_ZONA = state.value.listaZona[0]
                                 onEvent(ZonasEvent.InitMesa(state.value.listaZona[0].idZona))
                             }
                             is NetworkResult.Error -> {

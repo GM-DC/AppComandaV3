@@ -7,7 +7,6 @@ import com.owlcode.appcomandav3.domain.zones.model.TableModel
 class Constants(){
 
     companion object{
-        lateinit var DATA_USER: LoginUserResponseModel
         lateinit var MESA:String
         lateinit var MOZO:String
     }

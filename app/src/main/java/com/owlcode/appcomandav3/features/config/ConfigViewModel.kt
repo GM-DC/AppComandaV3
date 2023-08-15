@@ -4,6 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.owlcode.appcomandav3.common.isValidIP
+import com.owlcode.appcomandav3.common.utils
 import com.owlcode.appcomandav3.common.utils.Companion.PORT
 import com.owlcode.appcomandav3.common.utils.Companion.URLBASE
 import com.owlcode.appcomandav3.domain.config.usecase.GetDataStoreUseCase
@@ -57,9 +59,11 @@ class ConfigViewModel @Inject constructor(
 
             }
             is ConfigEvent.InputIP -> {
-                _state.value = state.value.copy(
-                    ip = event.text
-                )
+                if(isValidIP(event.text)){
+                    _state.value = state.value.copy(
+                        ip = event.text
+                    )
+                }
             }
             is ConfigEvent.InputPuerto -> {
                 _state.value = state.value.copy(
@@ -75,10 +79,15 @@ class ConfigViewModel @Inject constructor(
                 val urlbase = state.value.ip
                 val port = state.value.puerto
                 val ipImpresora = state.value.ipImpresora
-                viewModelScope.launch{
-                    URLBASE = urlbase
-                    PORT = port
-                    saveDataStoreUseCase(urlbase,port,ipImpresora)
+
+                if(urlbase.isNotBlank() && urlbase.isNotEmpty() &&
+                    port.isNotBlank() && port.isNotEmpty() &&
+                    ipImpresora.isNotBlank() && ipImpresora.isNotEmpty()){
+                    viewModelScope.launch{
+                        URLBASE = urlbase
+                        PORT = port
+                        saveDataStoreUseCase(urlbase,port,ipImpresora)
+                    }
                 }
             }
         }

@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AppComandaV3"
 include(":app")
+include(":thermalPrinter")

@@ -1,15 +1,18 @@
 package com.owlcode.appcomandav3.features.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,6 +25,7 @@ import com.owlcode.appcomandav3.ui.componet.TecladoNumerico
 import com.owlcode.appcomandav3.ui.componet.UserItem
 import com.owlcode.appcomandav3.ui.primary.ButtonPrimary
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
+import com.owlcode.appcomandav3.ui.theme.Gallery
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -48,7 +52,11 @@ fun LoginScreen(
         }
     }
 
-    Row(Modifier.fillMaxSize()) {
+    Row(
+        Modifier
+            .background(Gallery)
+            .fillMaxSize()
+    ) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -64,7 +72,9 @@ fun LoginScreen(
             ) {
                 itemsIndexed(state.listUsers){ index, user ->
                     UserItem(
-                        modifier = Modifier.padding(5.dp),
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .height(100.dp),
                         name = user.nombreUsuario,
                         onClick = { userSelct ->
                             viewModel.onEvent(LoginEvent.InputUser(userSelct))
@@ -83,7 +93,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(5.dp),
                 text = state.user,
-                txtSize = 20.sp,
+                txtSize = 30.sp,
                 textAlign = TextAlign.Center
             )
             if(state.user.isNotBlank()){
@@ -92,7 +102,14 @@ fun LoginScreen(
                         viewModel.onEvent(LoginEvent.InputPassword(it))
                     }
                 )
-                ButtonPrimary(text = "Ingresar") {
+                ButtonPrimary(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 50.dp, vertical = 5.dp)
+                        .height(70.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = "Ingresar"
+                ) {
                     viewModel.onEvent(LoginEvent.ValidatePassword)
                 }
             }
