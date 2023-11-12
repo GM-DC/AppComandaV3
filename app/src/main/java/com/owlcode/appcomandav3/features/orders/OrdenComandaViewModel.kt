@@ -1,7 +1,6 @@
 package com.owlcode.appcomandav3.features.orders
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -9,10 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.owlcode.appcomandav3.common.PrintOrder
 import com.owlcode.appcomandav3.common.PrintPreCount
+import com.owlcode.appcomandav3.common.datamodelconst.DataListSave
 import com.owlcode.appcomandav3.common.utils
+import com.owlcode.appcomandav3.common.utils.Companion.DATA_LISTA_GUARDADA
 import com.owlcode.appcomandav3.common.utils.Companion.DATA_TABLE
 import com.owlcode.appcomandav3.common.utils.Companion.DATA_USER
 import com.owlcode.appcomandav3.common.utils.Companion.DATA_ZONA
+import com.owlcode.appcomandav3.common.utils.Companion.IMP_PRECUENTA
 import com.owlcode.appcomandav3.common.utils.Companion.NOMBRE_MOZO
 import com.owlcode.appcomandav3.common.utils.Companion.NOMBRE_USURIO
 import com.owlcode.appcomandav3.core.NetworkResult
@@ -32,13 +34,13 @@ import com.owlcode.appcomandav3.domain.orders.usecase.PutUpdateStateTableUseCase
 import com.owlcode.appcomandav3.features.orders.model.StateOrden
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class OrdenComandaViewModel @Inject constructor(
@@ -107,6 +109,7 @@ class OrdenComandaViewModel @Inject constructor(
                                     listPlatos = result.data!!.toMutableList(),
                                     isLoading = false
                                 )
+
                             }
                             is NetworkResult.Error -> {
                                 _state.value = state.value.copy(
@@ -128,14 +131,34 @@ class OrdenComandaViewModel @Inject constructor(
                     getOrdersFulfilledUseCase(event.idPedido).onEach { result ->
                         when (result) {
                             is NetworkResult.Success -> {
+                                println("NetworkResult.Success: PASO AQUI 1")
+                                val listServicio = result.data?.toMutableList() ?: mutableListOf()
+                                var listGuardada = listOf<ListOrdersModel>()
+                                DATA_LISTA_GUARDADA.filter {
+                                    it.idMesa == state.value.datoMesa?.idMesa &&
+                                            it.idZona == state.value.datoZone?.idZona
+                                }.map {
+                                    listGuardada = it.listPedido
+                                }
+                                listServicio.addAll(listGuardada)
                                 _state.value = state.value.copy(
                                     isLoading = false,
-                                    listPedido = result.data?.toMutableList() ?: mutableListOf()
+                                    listPedido = listServicio
                                 )
                             }
                             is NetworkResult.Error -> {
+                                val listServicio : MutableList<ListOrdersModel> = mutableListOf()
+                                var listGuardada = listOf<ListOrdersModel>()
+                                DATA_LISTA_GUARDADA.filter {
+                                    it.idMesa == state.value.datoMesa?.idMesa &&
+                                            it.idZona == state.value.datoZone?.idZona
+                                }.map {
+                                    listGuardada = it.listPedido
+                                }
+                                listServicio.addAll(listGuardada)
                                 _state.value = state.value.copy(
-                                    isLoading = false
+                                    isLoading = false,
+                                    listPedido = listServicio
                                 )
                             }
                             is NetworkResult.Loading -> {
@@ -145,6 +168,7 @@ class OrdenComandaViewModel @Inject constructor(
                             }
                         }
                     }.launchIn(this)
+
                 }
             }
             is OrdenComandaEvent.InitPreCuenta -> {
@@ -170,6 +194,12 @@ class OrdenComandaViewModel @Inject constructor(
                         }
                     }.launchIn(this)
                 }
+            }
+            is OrdenComandaEvent.InitDataObservacion -> {
+                val listActual = state.value.listPedido.toMutableList()
+                _state.value = state.value.copy(
+                    inputText = listActual[event.position].observacion
+                )
             }
             is OrdenComandaEvent.OnClickAddProducto -> {
                 fun addPedido(){
@@ -218,16 +248,21 @@ class OrdenComandaViewModel @Inject constructor(
                     )
                 }
                 if (NOMBRE_MOZO == NOMBRE_USURIO || NOMBRE_MOZO.isBlank()){
+                    if(state.value.listPedido.none{it.estadoPedido == "PENDIENTE"}){
+                        onEvent(OrdenComandaEvent.ActualizarEstadoMesa(
+                            state.value.datoZone?.idZona.orEmpty(),
+                            state.value.datoMesa?.idMesa ?: -1,
+                            "O",
+                            DATA_USER.usuario
+                        ))
+                    }
                     addPedido()
                 }else{
                     Toast.makeText(getContexto, "Mesa ocupada por $NOMBRE_MOZO", Toast.LENGTH_SHORT).show()
                 }
-            }
-            is OrdenComandaEvent.InitDataObservacion -> {
-                val listActual = state.value.listPedido.toMutableList()
-                _state.value = state.value.copy(
-                    inputText = listActual[event.position].observacion
-                )
+                viewModelScope.launch(Dispatchers.Main) {
+                    _uiEvnet.emit(UIEvent.GoToScrolll(state.value.listPedido.size))
+                }
             }
             is OrdenComandaEvent.OnClickAgregarNotaProducto -> {
                 val listActual = state.value.listPedido.toMutableList()
@@ -287,12 +322,19 @@ class OrdenComandaViewModel @Inject constructor(
                 }
             }
             is OrdenComandaEvent.OnSwipeDelete -> {
-                Log.d("Gian", "---> ItemPosition: ${event.position}")
                 val listActual = state.value.listPedido.toMutableList()
                 listActual.removeAt(event.position)
                 _state.value = state.value.copy(
                     listPedido = listActual
                 )
+                if(state.value.listPedido.size == 0){
+                    onEvent(OrdenComandaEvent.ActualizarEstadoMesa(
+                        state.value.datoZone?.idZona.orEmpty(),
+                        state.value.datoMesa?.idMesa ?: -1,
+                        "L",
+                        DATA_USER.usuario
+                    ))
+                }
             }
             is OrdenComandaEvent.BuscarCoincidencia -> {
                 var action = 0
@@ -333,7 +375,7 @@ class OrdenComandaViewModel @Inject constructor(
             }
             is OrdenComandaEvent.OnClickPreCuenta -> {
                 state.value.listPreCuenta?.let {
-                    val statoPrint = PrintPreCount().printTcp("192.169.1.7", 9100, it, getContexto)
+                    val statoPrint = PrintPreCount().printTcp(IMP_PRECUENTA, 9100, it, getContexto)
                     if (statoPrint){
                         Toast.makeText(getContexto, "Se envio exitosamente", Toast.LENGTH_SHORT).show()
                     }else{
@@ -427,6 +469,35 @@ class OrdenComandaViewModel @Inject constructor(
             is OrdenComandaEvent.ActualizarEstadoMesa -> {
                 viewModelScope.launch {
                     putUpdateStateTableUseCase(event.idZona,event.idMesa,event.estadoMesa,event.nameMozo)
+                }
+            }
+            is OrdenComandaEvent.GuardarListaPedidoPendiente -> {
+                val listPedidoPendiente = state.value.listPedido.filter {
+                    it.estadoPedido == "PENDIENTE"
+                }
+                val index = DATA_LISTA_GUARDADA.indexOfFirst { dataListSave ->
+                    DATA_ZONA.idZona == dataListSave.idZona && DATA_TABLE.idMesa == dataListSave.idMesa
+                }
+                println("listPedidoPendiente: $listPedidoPendiente")
+                println("index: $index")
+                if(index == -1){
+                    DATA_LISTA_GUARDADA.add(
+                        DataListSave(
+                            idZona = DATA_ZONA.idZona,
+                            idMesa = DATA_TABLE.idMesa,
+                            listPedido = listPedidoPendiente.toMutableList()
+                        )
+                    )
+                }else{
+                    DATA_LISTA_GUARDADA[index] = DataListSave(
+                        idZona = DATA_ZONA.idZona,
+                        idMesa = DATA_TABLE.idMesa,
+                        listPedido = listPedidoPendiente.toMutableList()
+                    )
+                }
+                println("DATA_LISTA_GUARDADA: $DATA_LISTA_GUARDADA")
+                viewModelScope.launch(Dispatchers.Main){
+                    _uiEvnet.emit(UIEvent.GoToBack)
                 }
             }
         }

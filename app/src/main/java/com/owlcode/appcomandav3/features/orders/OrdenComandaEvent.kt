@@ -11,30 +11,27 @@ sealed class OrdenComandaEvent {
     data class InitPedidoDespachado(val idPedido: String) :  OrdenComandaEvent()
     data class InitPreCuenta(val idPedido: String) :  OrdenComandaEvent()
     data class InitDataObservacion (val position: Int) :  OrdenComandaEvent()
-
     data class OnClickAddProducto(val platoAgregado: DishModel) :  OrdenComandaEvent()
     data class OnClickAumentarProducto(val position: Int) :  OrdenComandaEvent()
     data class OnClickDisminuirProducto(val position: Int) :  OrdenComandaEvent()
     data class OnSwipeDelete(val position: Int) :  OrdenComandaEvent()
     data class OnClickAgregarNotaProducto(val position: Int, val textObservacion: String ) :  OrdenComandaEvent()
-
     object OnClickLimpiar : OrdenComandaEvent()
     object OnClickPreCuenta : OrdenComandaEvent()
-
     object OnClickEnviarComanda : OrdenComandaEvent()
     data class OnEnviarComanda(val pedido: SendOrdersModel) : OrdenComandaEvent()
     data class RespuestaDelEnvioComanda(val idPedido: String, val resultComandaEnviarda :SendOrdersModel?) : OrdenComandaEvent()
     data class FiltarListaParaImprimirComanda(val resp :List<OrderModel>, val resultSendOrder: SendOrdersModel) : OrdenComandaEvent()
-
     data class PutUpdateColorOrder(val comanda: String,val idpedido: Int) : OrdenComandaEvent()
-
     data class ActualizarEstadoMesa(val idZona: String,val idMesa: Int,val estadoMesa: String,val nameMozo: String) : OrdenComandaEvent()
-
-
     data class BuscarCoincidencia(val idProducto: Int) :  OrdenComandaEvent()
+    object GuardarListaPedidoPendiente :  OrdenComandaEvent()
+
 }
 
 
 sealed class UIEvent {
     object GoToZona : UIEvent()
+    object GoToBack : UIEvent()
+    class GoToScrolll(val size:Int) : UIEvent()
 }

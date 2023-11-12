@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,18 +32,22 @@ fun MesaItem(
 ) {
     var color = Color.White
     var containerColor = Color.White
+    var estadoMesaTexto = ""
     when{
         dataMesa.estadoTrans == "L" && dataMesa.idPedido.isNullOrEmpty() ->{
              color = DodgerBlue
              containerColor = DodgerBlueDesgrade
+             estadoMesaTexto = "LIBRE"
         }
         dataMesa.estadoTrans == "O" && !dataMesa.idPedido.isNullOrEmpty() -> {
              color = Scarlet
              containerColor = ScarletDegrade
+             estadoMesaTexto = "OCUPADO"
         }
         else -> {
              color = Amber
              containerColor = AmberDesgrade
+             estadoMesaTexto = "RESERVADO"
         }
     }
 
@@ -65,9 +68,9 @@ fun MesaItem(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextPrimary(text = "Mesa ${dataMesa.idMesa}")
+            TextPrimary(text = "MESA ${dataMesa.idMesa}")
             TextPrimary(text = dataMesa.NombreMozo.orEmpty())
-            TextPrimary(text = dataMesa.estadoTrans)
+            TextPrimary(text = estadoMesaTexto)
         }
     }
 }

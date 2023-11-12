@@ -17,6 +17,7 @@
 package com.owlcode.appcomandav3.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import kotlin.random.Random
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
@@ -27,13 +28,35 @@ val PurpleGrey40 = Color(0xFF91C8E4)
 val Pink40 = Color(0xFF749BC2)
 
 
+val Shark = Color(0xFF272829)
 val Transparent = Color(0xFFFFFF)
 val BlackTransparent = Color(0x8A000000)
 val While = Color(0xFFFFFFFF)
 val DodgerBlue = Color(0xFF5463FF)
+val DodgerBlueBackground = Color(0xFF8D97FC)
 val DodgerBlueDesgrade = Color(0x606C79FD)
 val Scarlet = Color(0xFFFF1818)
 val ScarletDegrade = Color(0xA1FF3F3F)
+val ScarletDegradeBackground = Color(0xA1FF7676)
 val Amber = Color(0xFFD8842C)
 val AmberDesgrade = Color(0xD7CEA071)
 val Gallery = Color(0xFFECECEC)
+val SoftPeach = Color(0xFFF9F5F6)
+val AquaSqueeze = Color(0xFFE3F4F4)
+val Nepal = Color(0xFF96B6C5)
+
+
+
+fun generateDarkColor(): Color {
+    val red = Random.nextInt(0, 128)
+    val green = Random.nextInt(0, 128)
+    val blue = Random.nextInt(0, 128)
+    return Color(red, green, blue)
+}
+
+fun generateLightColor(): Color {
+    val red = Random.nextInt(128, 256)
+    val green = Random.nextInt(128, 256)
+    val blue = Random.nextInt(128, 256)
+    return Color(red, green, blue)
+}

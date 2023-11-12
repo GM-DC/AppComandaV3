@@ -1,29 +1,32 @@
 package com.owlcode.appcomandav3.core.db.dao
 
-import androidx.room.*
-import com.owlcode.appcomandav3.core.db.entity.EntitySaveOrders
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Dao
 
 @Dao
 interface DaoSaveOrders {
-
     /*
-    @Query("SELECT EXISTS(SELECT * FROM EntitySaveOrders)")
-    fun isExistsSaveOrders(): Boolean
+        @Transaction
+        @Query("SELECT * FROM EntitySaveOrders WHERE (zona = :zone) AND (mesa LIKE :table)")
+        fun getOrdersWithPedidosByZoneTable(zone: Int, table: String): Flow<List<OrdersWithPedidos>>
 
-    @Query("SELECT * FROM EntitySaveOrders")
-    fun getAllSaveOrders(): Flow<List<EntitySaveOrders>>
+        @Query("""DELETE FROM Pedido WHERE orderId IN ( SELECT id FROM EntitySaveOrders  WHERE (zona = :zone) AND (mesa LIKE :table)  ) """)
+        suspend fun deletePedidosByZoneTable(zone: Int, table: String)
 
-    @Query("SELECT * FROM EntitySaveOrders WHERE (zona = :zone) AND (mesa LIKE :table) " )
-    suspend fun getUserByZoneTable(zone: Int,table:Int): EntitySaveOrders?
+        @Query("""SELECT id FROM EntitySaveOrders WHERE (zona = :zone) AND (mesa LIKE :table) """)
+        suspend fun getOrderIdByZoneTable(zone: Int, table: String): Int?
 
-    @Insert
-    fun insertSaveOrders( insertzonas: EntitySaveOrders)
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        suspend fun insertPedido(pedido: Pedido)
 
-    @Query("DELETE FROM EntitySaveOrders")
-    fun deleteSaveOrders()
 
-    @Query("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'EntitySaveOrders'")
-    fun clearPrimaryKey()
-*/
+
+        @Insert
+        fun insertZona( insertzonas: EntitySaveOrders)
+
+        @Query("DELETE FROM EntitySaveOrders")
+        fun deleteSaveOrders()
+
+        @Query("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'EntitySaveOrders'")
+        fun clearPrimaryKey()
+        */
 }

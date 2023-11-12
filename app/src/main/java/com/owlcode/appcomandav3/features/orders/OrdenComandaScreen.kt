@@ -1,7 +1,7 @@
 package com.owlcode.appcomandav3.features.orders
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -29,21 +30,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.owlcode.appcomandav3.R
+import com.owlcode.appcomandav3.common.OrdenComandaNav
+import com.owlcode.appcomandav3.common.ZoneNav
 import com.owlcode.appcomandav3.domain.orders.model.CategoryModel
 import com.owlcode.appcomandav3.domain.orders.model.DishModel
 import com.owlcode.appcomandav3.domain.orders.model.ListOrdersModel
 import com.owlcode.appcomandav3.ui.componet.CategoriaItem
 import com.owlcode.appcomandav3.ui.componet.PedidoItem
 import com.owlcode.appcomandav3.ui.componet.PlatoItem
+import com.owlcode.appcomandav3.ui.componet.dialog.DialogConfirmationComanda
 import com.owlcode.appcomandav3.ui.componet.dialog.DialogObservaciones
 import com.owlcode.appcomandav3.ui.primary.ButtonPrimary
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
-import com.owlcode.appcomandav3.R
-import com.owlcode.appcomandav3.common.OrdenComandaNav
-import com.owlcode.appcomandav3.common.ZoneNav
-import com.owlcode.appcomandav3.ui.componet.dialog.DialogConfirmationComanda
+import com.owlcode.appcomandav3.ui.theme.AquaSqueeze
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -56,7 +59,7 @@ fun OrdenComandaScreen(
     var showDialogObservacion by remember { mutableStateOf(false) }
     var showDialogConfirmationComanda by remember { mutableStateOf(false) }
     var positionItem by remember { mutableStateOf(-1) }
-
+    val list = rememberLazyListState()
 
     LaunchedEffect(Unit){
         viewModel.uiEvnet.collectLatest {
@@ -68,11 +71,23 @@ fun OrdenComandaScreen(
                         }
                     }
                 }
+                UIEvent.GoToBack -> {
+                    navController.navigate(ZoneNav.ZoneScreen.route){
+                        popUpTo(OrdenComandaNav.OrdenComandaScreen.route){
+                            inclusive = true
+                        }
+                    }
+                }
+                is UIEvent.GoToScrolll -> {
+                    list.scrollToItem(it.size-1)
+                }
             }
         }
     }
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AquaSqueeze)
     ) {
         Column(
             modifier = Modifier.weight(1f)
@@ -82,11 +97,16 @@ fun OrdenComandaScreen(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                TextPrimary(text = "Categoria")
+                TextPrimary(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    text = "Categoria",
+                    txtSize = 18.sp,
+                    fontWeight = 600
+                )
                 LazyHorizontalGrid(
                     modifier = Modifier
-                        .padding(10.dp),
-                    rows = GridCells.Fixed(2)
+                        .padding(5.dp),
+                    rows = GridCells.Fixed(2),
                 ) {
                     itemsIndexed(state.listCategoria) { index: Int, categoria: CategoryModel ->
                         CategoriaItem(
@@ -104,7 +124,13 @@ fun OrdenComandaScreen(
                     .fillMaxWidth()
                     .weight(3f)
             ) {
-                TextPrimary(text = "Platos")
+                TextPrimary(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    text = "Platos",
+                    txtSize = 18.sp,
+                    fontWeight = 600
+                )
+
                 LazyHorizontalGrid(
                     modifier = Modifier
                         .padding(10.dp),
@@ -117,6 +143,7 @@ fun OrdenComandaScreen(
                             dataPlato = plato,
                             onClick = {
                                 viewModel.onEvent(OrdenComandaEvent.OnClickAddProducto(it))
+
                             }
                         )
                     }
@@ -136,12 +163,15 @@ fun OrdenComandaScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         text = "PEDIDOS",
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        txtSize = 22.sp,
+                        fontWeight = 600
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
                             .align(Alignment.Start)
                     ) {
                         TextPrimary(text = "Zona: ${state.datoZone?.nombreZonas.orEmpty()}")
@@ -177,9 +207,11 @@ fun OrdenComandaScreen(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        state = list
                     ) {
                         itemsIndexed(state.listPedido) { index: Int, item: ListOrdersModel ->
                             PedidoItem(
@@ -208,6 +240,15 @@ fun OrdenComandaScreen(
                         .fillMaxWidth()
                         .weight(1f),
                 ) {
+                    TextPrimary(
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .fillMaxWidth(),
+                        text = "TOTAL S/. ${state.listPedido.sumOf { it.precioTotal }}",
+                        textAlign = TextAlign.End,
+                        txtSize = 16.sp,
+                        fontWeight = 700
+                    )
                     ButtonPrimary(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         text = "Enviar",
@@ -246,11 +287,7 @@ fun OrdenComandaScreen(
     )
 
     BackHandler {
-        navController.navigate(ZoneNav.ZoneScreen.route){
-            popUpTo(OrdenComandaNav.OrdenComandaScreen.route){
-                inclusive = true
-            }
-        }
+        viewModel.onEvent(OrdenComandaEvent.GuardarListaPedidoPendiente)
     }
 
 }

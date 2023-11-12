@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.owlcode.appcomandav3.common.isValidIP
-import com.owlcode.appcomandav3.common.utils
+import com.owlcode.appcomandav3.common.utils.Companion.IMP_PRECUENTA
 import com.owlcode.appcomandav3.common.utils.Companion.PORT
 import com.owlcode.appcomandav3.common.utils.Companion.URLBASE
 import com.owlcode.appcomandav3.domain.config.usecase.GetDataStoreUseCase
@@ -47,7 +47,8 @@ class ConfigViewModel @Inject constructor(
                         )
                         URLBASE = state.value.ip
                         PORT = state.value.puerto
-                        if (URLBASE.isNotBlank() && PORT.isNotBlank()){
+                        IMP_PRECUENTA = state.value.ipImpresora
+                        if (URLBASE.isNotBlank() && PORT.isNotBlank() && IMP_PRECUENTA.isNotBlank()){
                             println("url: $URLBASE")
                             println("port: $PORT")
                             viewModelScope.launch(Dispatchers.Main) {
@@ -86,6 +87,7 @@ class ConfigViewModel @Inject constructor(
                     viewModelScope.launch{
                         URLBASE = urlbase
                         PORT = port
+                        IMP_PRECUENTA = ipImpresora
                         saveDataStoreUseCase(urlbase,port,ipImpresora)
                     }
                 }

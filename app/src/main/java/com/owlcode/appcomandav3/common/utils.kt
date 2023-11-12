@@ -1,20 +1,17 @@
 package com.owlcode.appcomandav3.common
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import com.owlcode.appcomandav3.common.datamodelconst.DataListSave
 import com.owlcode.appcomandav3.domain.passcode.model.LoginUserResponseModel
 import com.owlcode.appcomandav3.domain.zones.model.TableModel
 import com.owlcode.appcomandav3.domain.zones.model.ZoneModel
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class utils {
 
     companion object{
         var URLBASE = ""
         var PORT = ""
+        var IMP_PRECUENTA = ""
         var ZONA = ""
         var NOMBRE_USURIO = ""
         var NOMBRE_MOZO = ""
@@ -55,6 +52,8 @@ class utils {
             validez = "",
             cdG_VENDEDOR = ""
         )
+        var DATA_LISTA_GUARDADA : MutableList<DataListSave> = mutableListOf()
+
     }
 
 

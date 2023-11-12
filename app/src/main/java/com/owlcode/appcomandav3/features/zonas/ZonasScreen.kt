@@ -1,10 +1,10 @@
 package com.owlcode.appcomandav3.features.zonas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -21,11 +21,11 @@ import com.owlcode.appcomandav3.common.ZoneNav
 import com.owlcode.appcomandav3.common.utils.Companion.DATA_TABLE
 import com.owlcode.appcomandav3.common.utils.Companion.DATA_ZONA
 import com.owlcode.appcomandav3.common.utils.Companion.NOMBRE_MOZO
-import com.owlcode.appcomandav3.common.utils.Companion.ZONA
 import com.owlcode.appcomandav3.domain.zones.model.TableModel
 import com.owlcode.appcomandav3.ui.componet.MesaItem
 import com.owlcode.appcomandav3.ui.componet.ZonasItem
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
+import com.owlcode.appcomandav3.ui.theme.AquaSqueeze
 
 @Composable
 fun ZonasScreen(
@@ -38,7 +38,9 @@ fun ZonasScreen(
 
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AquaSqueeze)
     ) {
         Column(
             modifier = Modifier
@@ -46,8 +48,10 @@ fun ZonasScreen(
                 .weight(1f)
         ) {
             TextPrimary(
+                modifier = Modifier.padding(horizontal = 10.dp),
                 text = "Zonas",
-                txtSize = 20.sp
+                txtSize = 20.sp,
+                fontWeight = 700
             )
             LazyRow {
                 itemsIndexed(listazona) {  index, zonas ->
@@ -70,8 +74,10 @@ fun ZonasScreen(
                 .weight(4f)
         ) {
             TextPrimary(
+                modifier = Modifier.padding(horizontal = 10.dp),
                 text = "Mesas",
-                txtSize = 20.sp
+                txtSize = 20.sp,
+                fontWeight = 700
             )
             LazyHorizontalGrid(
                 modifier = Modifier
