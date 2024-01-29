@@ -10,11 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.owlcode.appcomandav3.common.ConfigNav
 import com.owlcode.appcomandav3.common.LoginNav
 import com.owlcode.appcomandav3.common.OrdenComandaNav
@@ -23,8 +21,8 @@ import com.owlcode.appcomandav3.features.config.ConfigScreen
 import com.owlcode.appcomandav3.features.login.LoginScreen
 import com.owlcode.appcomandav3.features.orders.OrdenComandaScreen
 import com.owlcode.appcomandav3.features.zonas.ZonasScreen
-import dagger.hilt.android.AndroidEntryPoint
 import com.owlcode.appcomandav3.ui.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
@@ -49,6 +47,7 @@ class MainActivity : ComponentActivity() {
                         ){
                             composable(route = ConfigNav.ConfigScreen.route){
                                 ConfigScreen(navController)
+                                //LoginScreen(navController)
                             }
                             composable(route = LoginNav.LoginScreen.route){
                                 LoginScreen(navController)

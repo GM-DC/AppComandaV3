@@ -40,10 +40,13 @@ val ScarletDegrade = Color(0xA1FF3F3F)
 val ScarletDegradeBackground = Color(0xA1FF7676)
 val Amber = Color(0xFFD8842C)
 val AmberDesgrade = Color(0xD7CEA071)
-val Gallery = Color(0xFFECECEC)
+val Gallery = Color(0xFFEEF5FF)
 val SoftPeach = Color(0xFFF9F5F6)
 val AquaSqueeze = Color(0xFFE3F4F4)
 val Nepal = Color(0xFF96B6C5)
+val Downrive = Color(0xFF0C2D57)
+
+
 
 
 

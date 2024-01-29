@@ -1,6 +1,7 @@
 package com.owlcode.appcomandav3.features.login
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -87,17 +88,19 @@ fun LoginScreen(
             modifier = Modifier
                 .weight(1f)
                 .padding(10.dp),
+            verticalArrangement = Arrangement.Center
         ) {
             TextPrimary(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(5.dp),
+                    .padding(top = 25.dp),
                 text = state.user,
                 txtSize = 30.sp,
                 textAlign = TextAlign.Center
             )
             if(state.user.isNotBlank()){
                 TecladoNumerico(
+                    modifier = Modifier.padding(25.dp),
                     returnText = {
                         viewModel.onEvent(LoginEvent.InputPassword(it))
                     }
@@ -105,10 +108,11 @@ fun LoginScreen(
                 ButtonPrimary(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 50.dp, vertical = 5.dp)
+                        .padding(horizontal = 50.dp, vertical = 25.dp)
                         .height(70.dp)
                         .align(Alignment.CenterHorizontally),
-                    text = "Ingresar"
+                    text = "Ingresar",
+                    txtSize = 25.sp
                 ) {
                     viewModel.onEvent(LoginEvent.ValidatePassword)
                 }

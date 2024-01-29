@@ -1,6 +1,6 @@
 package com.owlcode.appcomandav3.ui.componet
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.owlcode.appcomandav3.ui.primary.ButtonPrimary
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
 
 @Composable
@@ -28,7 +27,9 @@ fun TecladoNumerico(
     var text by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextPrimary(
             modifier = Modifier
@@ -39,7 +40,7 @@ fun TecladoNumerico(
             textAlign = TextAlign.Center
         )
         Row {
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .weight(1f)
@@ -50,7 +51,7 @@ fun TecladoNumerico(
                 text += "1"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -60,7 +61,7 @@ fun TecladoNumerico(
                 text += "2"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -72,7 +73,7 @@ fun TecladoNumerico(
             }
         }
         Row {
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -82,7 +83,7 @@ fun TecladoNumerico(
                 text += "4"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -92,7 +93,7 @@ fun TecladoNumerico(
                 text += "5"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -104,7 +105,7 @@ fun TecladoNumerico(
             }
         }
         Row {
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -115,7 +116,7 @@ fun TecladoNumerico(
                 text += "7"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -125,7 +126,7 @@ fun TecladoNumerico(
                 text += "8"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -137,7 +138,7 @@ fun TecladoNumerico(
             }
         }
         Row {
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -146,7 +147,7 @@ fun TecladoNumerico(
                 text = " ") {
 
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -156,7 +157,7 @@ fun TecladoNumerico(
                 text += "0"
                 returnText(text)
             }
-            ButtonPrimary(
+            CircleButton(
                 modifier = Modifier
                     .padding(5.dp)
                     .height(70.dp)
@@ -168,4 +169,15 @@ fun TecladoNumerico(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun TecladoNumericoPreview() {
+    TecladoNumerico(
+        modifier = Modifier,
+        returnText = {
+
+        }
+    )
 }

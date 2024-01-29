@@ -84,8 +84,7 @@ class utils {
 }
 
 
-fun isValidIP(text: String):Boolean{
-    val pattern = """^[0-9.]*$""".toRegex()
-    val isValid = pattern.matches(text)
-    return isValid
+fun isValidIP(text: String): Boolean {
+    val pattern = "^[0-9.]*$".toRegex()
+    return pattern.matches(text)
 }

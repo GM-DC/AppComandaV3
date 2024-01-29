@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -20,14 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.owlcode.appcomandav3.R
 import com.owlcode.appcomandav3.common.ConfigNav
 import com.owlcode.appcomandav3.common.LoginNav
 import com.owlcode.appcomandav3.ui.primary.ButtonPrimary
 import com.owlcode.appcomandav3.ui.primary.TextFieldPrimary
 import com.owlcode.appcomandav3.ui.primary.TextPrimary
-import kotlinx.coroutines.flow.collectLatest
-import com.owlcode.appcomandav3.R
 import com.owlcode.appcomandav3.ui.theme.Gallery
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ConfigScreen(
@@ -77,6 +78,7 @@ fun ConfigScreen(
                     text = state.ip,
                     keyboardType = KeyboardType.Number,
                     maxDigitos = 15,
+                    label = "xxx.xxxx.xxx.xxx",
                     onValueChange = {
                         viewModel.onEvent(ConfigEvent.InputIP(it))
                     }
@@ -92,6 +94,7 @@ fun ConfigScreen(
                     text = state.puerto,
                     keyboardType = KeyboardType.Number,
                     maxDigitos = 4,
+                    label = "xxxx",
                     onValueChange = {
                         viewModel.onEvent(ConfigEvent.InputPuerto(it))
                     }
@@ -106,6 +109,7 @@ fun ConfigScreen(
                 TextFieldPrimary(
                     text = state.ipImpresora,
                     keyboardType = KeyboardType.Number,
+                    label = "xxx.xxx.xxx.xxx",
                     maxDigitos = 15,
                     onValueChange = {
                         viewModel.onEvent(ConfigEvent.InputIPImpresora(it))
@@ -115,8 +119,11 @@ fun ConfigScreen(
 
             Spacer(modifier = Modifier.height(15.dp))
             ButtonPrimary(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = "Guardar Dato"
+                modifier = Modifier
+                    .size(200.dp, 50.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = "Guardar Dato",
+                txtSize = 20.sp
             ) {
                 viewModel.onEvent(ConfigEvent.GuardarDatos)
             }
